@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquivo Enviado - Sistema João Layon</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3436 50%, #1a1d29 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .card {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: #198754;
+            animation: checkmark 0.6s ease-in-out;
+        }
+        
+        @keyframes checkmark {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body text-center p-5">
+                        <i class="bi bi-check-circle-fill success-icon"></i>
+                        
+                        <h2 class="mt-4 mb-4">Arquivo Enviado com Sucesso!</h2>
+                        
+                        <div class="alert alert-success">
+                            <h5><i class="bi bi-file-earmark-check me-2"></i>{{ filename }}</h5>
+                            <p class="mb-0">Seu arquivo foi enviado e está disponível para o administrador visualizar.</p>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-person me-2"></i>Paciente</h6>
+                                <p>{{ agendamento.paciente_rel.nome if agendamento.paciente_rel else 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-calendar me-2"></i>Agendamento</h6>
+                                <p>{{ agendamento.data }} às {{ agendamento.hora }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5">
+                            <a href="/" class="btn btn-info btn-lg me-3">
+                                <i class="bi bi-robot me-2"></i>
+                                Voltar ao Chatbot
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                O arquivo ficará disponível para download pela equipe médica
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

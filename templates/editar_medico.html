@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Médico - Sistema João Layon</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3436 50%, #1a1d29 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-person-gear me-2"></i>
+                Editar Médico
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{{ url_for('admin') }}">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Voltar ao Painel
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-fill-gear me-2"></i>
+                            Editar Médico: {{ medico.nome }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome" class="form-label">Nome Completo</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" 
+                                           value="{{ medico.nome }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="crm" class="form-label">CRM</label>
+                                    <input type="text" class="form-control" id="crm" name="crm" 
+                                           value="{{ medico.crm }}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="especialidade_id" class="form-label">Especialidade</label>
+                                    <select class="form-select" id="especialidade_id" name="especialidade_id" required>
+                                        <option value="">Selecione uma especialidade</option>
+                                        {% for especialidade in especialidades %}
+                                            <option value="{{ especialidade.id }}" 
+                                                    {% if especialidade.id == medico.especialidade_id %}selected{% endif %}>
+                                                {{ especialidade.nome }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="data_abertura_agenda" class="form-label">Data de Abertura da Agenda</label>
+                                    <input type="date" class="form-control" id="data_abertura_agenda" name="data_abertura_agenda" 
+                                           value="{{ medico.data_abertura_agenda if medico.data_abertura_agenda else '' }}">
+                                    <small class="form-text text-muted">
+                                        Data a partir da qual a agenda fica disponível para agendamentos. Se não definida, agenda fica sempre aberta.
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="ativo" 
+                                               name="ativo" {% if medico.ativo %}checked{% endif %}>
+                                        <label class="form-check-label" for="ativo">
+                                            <strong>Médico Ativo</strong>
+                                            <br><small class="text-muted">
+                                                Médico disponível para agendamentos
+                                            </small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="agenda_recorrente" 
+                                               name="agenda_recorrente" {% if medico.agenda_recorrente %}checked{% endif %}>
+                                        <label class="form-check-label" for="agenda_recorrente">
+                                            <strong>Agenda Recorrente</strong>
+                                            <br><small class="text-muted">
+                                                Pacientes ficam fixos no mesmo dia e horário por 1 mês
+                                            </small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Agenda Recorrente:</strong> Quando ativada, os pacientes que agendarem com este médico 
+                                ficarão fixos no mesmo dia da semana e horário por 1 mês, bloqueando esses horários para outros pacientes.
+                            </div>
+                            
+                            <div class="text-end">
+                                <a href="{{ url_for('admin') }}" class="btn btn-secondary me-2">
+                                    <i class="bi bi-x-circle me-2"></i>
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

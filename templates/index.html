@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento Médico IA - {{ nome_clinica }}</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-calendar-heart me-2"></i>
+                {{ nome_clinica }}
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/agendamentos">
+                    <i class="bi bi-list-ul me-1"></i>
+                    Ver Agendamentos
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 mb-3">
+                        <i class="bi bi-robot me-3" style="color: #00d084;"></i>
+                        {{ nome_clinica }} - Agendamento por IA
+                    </h1>
+                    <p class="lead text-muted">
+                        Fale naturalmente para agendar sua consulta na {{ nome_clinica }}
+                    </p>
+                    <small class="text-secondary">
+                        Desenvolvido por <strong>João Layon</strong> | R$ 19,90/mês
+                    </small>
+                </div>
+
+                <div class="card shadow-lg">
+                    <div class="card-body p-4">
+                        <form id="agendamentoForm">
+                            <div class="mb-4">
+                                <label for="textoAgendamento" class="form-label">
+                                    <i class="bi bi-chat-text me-2"></i>
+                                    Como você gostaria de agendar sua consulta?
+                                </label>
+                                <textarea 
+                                    class="form-control form-control-lg" 
+                                    id="textoAgendamento" 
+                                    name="texto_agendamento"
+                                    rows="4" 
+                                    placeholder="Ex: Oi, sou Maria Silva e gostaria de agendar uma consulta para amanhã às 15h..."
+                                    required
+                                ></textarea>
+                                <div class="form-text">
+                                    Fale naturalmente! Mencione seu nome, data e horário desejados.
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-lg" id="btnAgendar" style="background: linear-gradient(135deg, #00d084 0%, #00b16a 100%); border-color: rgba(0, 208, 132, 0.3); color: white;">
+                                    <i class="bi bi-calendar-plus me-2"></i>
+                                    Processar Agendamento
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Exemplos de uso -->
+                <div class="mt-5">
+                    <h5 class="text-center mb-4">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        Exemplos de como falar:
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-secondary">
+                                <div class="card-body">
+                                    <small class="text-muted d-block mb-2">Exemplo 1:</small>
+                                    <em>"Olá, sou João Silva. Preciso agendar uma consulta para segunda-feira às 14h."</em>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-secondary">
+                                <div class="card-body">
+                                    <small class="text-muted d-block mb-2">Exemplo 2:</small>
+                                    <em>"Boa tarde, Maria Santos aqui. Gostaria de marcar para amanhã de manhã, por volta das 10h."</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal para resultado -->
+                <div class="modal fade" id="resultadoModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalTitle">
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    Resultado do Agendamento
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="modalMessage" class="mb-0"></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                <a href="/agendamentos" class="btn" id="verAgendamentos" style="display: none; background: linear-gradient(135deg, #00d084 0%, #00b16a 100%); border-color: rgba(0, 208, 132, 0.3); color: white;">
+                                    <i class="bi bi-list-ul me-1"></i>
+                                    Ver Agendamentos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-center py-4 mt-5">
+        <div class="container">
+            <p class="text-muted mb-2">
+                {{ nome_clinica }} - Sistema de Agendamento Médico por IA
+            </p>
+            <p class="text-secondary small">
+                Desenvolvido por <strong>João Layon</strong> - Desenvolvedor Full Stack Python | 
+                <span style="color: #00d084;">Contato (31)9 9528 1707</span> | 
+                Agenda IA ilimitada
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

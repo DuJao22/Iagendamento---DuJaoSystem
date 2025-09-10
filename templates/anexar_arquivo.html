@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anexar Arquivo - Sistema João Layon</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3436 50%, #1a1d29 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .card {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control {
+            background: rgba(22, 27, 34, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+        }
+        
+        .form-control:focus {
+            background: rgba(22, 27, 34, 0.9);
+            border-color: #00d084;
+            box-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
+        }
+        
+        .upload-area {
+            border: 3px dashed rgba(0, 208, 132, 0.6);
+            border-radius: 20px;
+            padding: 4rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            background: linear-gradient(145deg, rgba(0, 208, 132, 0.1), rgba(0, 208, 132, 0.05));
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 208, 132, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .upload-area:hover::before {
+            left: 100%;
+        }
+        
+        .upload-area:hover {
+            border-color: #00d084;
+            background: linear-gradient(145deg, rgba(0, 208, 132, 0.2), rgba(0, 208, 132, 0.1));
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 208, 132, 0.3);
+        }
+        
+        .upload-area.dragover {
+            border-color: #00d084;
+            background: linear-gradient(145deg, rgba(0, 208, 132, 0.3), rgba(0, 208, 132, 0.15));
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 208, 132, 0.4);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            color: #00d084;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d084;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .upload-subtitle {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-note {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, rgba(0, 208, 132, 0.1), rgba(0, 208, 132, 0.05));
+            border: 2px solid rgba(0, 208, 132, 0.3);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(0, 208, 132, 0.2); }
+            to { box-shadow: 0 0 30px rgba(0, 208, 132, 0.4); }
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .attention-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+            animation: attention 2s ease-in-out infinite alternate;
+            border: 3px solid #ff4757;
+        }
+        
+        @keyframes attention {
+            from { transform: scale(1); box-shadow: 0 0 20px rgba(255, 107, 107, 0.3); }
+            to { transform: scale(1.02); box-shadow: 0 0 30px rgba(255, 107, 107, 0.6); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card highlight-card">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0">
+                            <i class="bi bi-paperclip me-2" style="color: #00d084; font-size: 2rem;"></i>
+                            Anexar Arquivo ao Agendamento
+                        </h3>
+                        <p class="mt-2 mb-0 text-muted">Envie seus documentos médicos de forma rápida e segura</p>
+                    </div>
+                    <div class="card-body">
+                        <!-- Banner de atenção -->
+                        <div class="attention-banner">
+                            <h5 class="mb-2">
+                                🚨 IMPORTANTE: ANEXE SEUS DOCUMENTOS MÉDICOS 🚨
+                            </h5>
+                            <p class="mb-0">
+                                📋 Exames • 💊 Receitas • 📄 Laudos • 🩺 Histórico Médico
+                            </p>
+                        </div>
+                        
+                        <!-- Informações do agendamento -->
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-info-circle me-2"></i>Informações do Agendamento</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Paciente:</strong> {{ agendamento.paciente_rel.nome if agendamento.paciente_rel else 'N/A' }}<br>
+                                    <strong>Médico:</strong> Dr(a). {{ agendamento.medico_rel.nome if agendamento.medico_rel else 'N/A' }}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Especialidade:</strong> {{ agendamento.especialidade_rel.nome if agendamento.especialidade_rel else 'N/A' }}<br>
+                                    <strong>Data/Hora:</strong> {{ agendamento.data }} às {{ agendamento.hora }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulário de upload -->
+                        <form method="POST" action="{{ url_for('upload_anexo_paciente', agendamento_id=agendamento.id) }}" 
+                              enctype="multipart/form-data" id="uploadForm">
+                            
+                            <div class="upload-area mb-4" id="uploadArea">
+                                <i class="bi bi-cloud-upload upload-icon"></i>
+                                <div class="upload-title">📁 ARRASTE SEU ARQUIVO AQUI</div>
+                                <div class="upload-subtitle">ou clique para selecionar</div>
+                                <div class="upload-note mt-3">
+                                    <strong>📋 Tipos aceitos:</strong> PDF, Imagens (JPG, PNG), Documentos (Word, Excel), Texto<br>
+                                    <strong>📏 Tamanho máximo:</strong> 16MB
+                                </div>
+                                
+                                <input type="file" class="form-control mt-4" id="arquivo" name="arquivo" 
+                                       accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.xls,.xlsx,.txt" 
+                                       required style="border: 2px solid #00d084; font-weight: bold;">
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-lg me-3" style="background: linear-gradient(135deg, #ffd700, #ffb347); border: none; color: #333; font-weight: bold; padding: 12px 30px; border-radius: 15px; box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4); transition: all 0.3s ease;">
+                                    <i class="bi bi-upload me-2" style="font-size: 1.2rem;"></i>
+                                    📤 ENVIAR ARQUIVO
+                                </button>
+                                <a href="/" class="btn btn-outline-light btn-lg" style="border: 2px solid #6c757d; color: #6c757d; font-weight: bold; padding: 12px 30px; border-radius: 15px; transition: all 0.3s ease;">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Voltar ao Chatbot
+                                </a>
+                            </div>
+                        </form>
+
+                        <!-- Alertas -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                <div class="mt-4">
+                                    {% for category, message in messages %}
+                                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                                            <i class="bi bi-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>
+                                            {{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Drag and drop functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('arquivo');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            uploadArea.classList.add('dragover');
+        }
+        
+        function unhighlight() {
+            uploadArea.classList.remove('dragover');
+        }
+        
+        uploadArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileName(files[0].name);
+            }
+        }
+        
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                updateFileName(this.files[0].name);
+            }
+        });
+        
+        function updateFileName(name) {
+            const uploadTitle = uploadArea.querySelector('.upload-title');
+            const uploadIcon = uploadArea.querySelector('.upload-icon');
+            
+            uploadTitle.innerHTML = `✅ ARQUIVO SELECIONADO`;
+            uploadIcon.className = 'bi bi-check-circle-fill upload-icon';
+            uploadIcon.style.color = '#28a745';
+            
+            // Adicionar nome do arquivo
+            let fileNameDiv = uploadArea.querySelector('.selected-file');
+            if (!fileNameDiv) {
+                fileNameDiv = document.createElement('div');
+                fileNameDiv.className = 'selected-file mt-2';
+                fileNameDiv.style.cssText = 'background: rgba(40, 167, 69, 0.2); padding: 10px; border-radius: 10px; border: 2px solid #28a745; font-weight: bold; color: #28a745;';
+                uploadArea.appendChild(fileNameDiv);
+            }
+            fileNameDiv.innerHTML = `📄 ${name}`;
+            
+            // Animar o card
+            uploadArea.style.borderColor = '#28a745';
+            uploadArea.style.background = 'linear-gradient(145deg, rgba(40, 167, 69, 0.2), rgba(40, 167, 69, 0.1))';
+        }
+    </script>
+</body>
+</html>

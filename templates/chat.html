@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Médico - {{ nome_clinica }}</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3436 50%, #1a1d29 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: rgba(13, 17, 23, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color:white;
+        }
+        
+        .chat-container {
+            height: 70vh;
+            border: none;
+            border-radius: 20px;
+            overflow-y: auto;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(13, 17, 23, 0.95) 0%, rgba(22, 27, 34, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00d084, #00b16a);
+            border-radius: 10px;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            animation: slideIn 0.4s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message.bot {
+            justify-content: flex-start;
+        }
+        
+        .message-content {
+            max-width: 75%;
+            padding: 16px 20px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #00d084 0%, #00b16a 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+            margin-left: 20px;
+        }
+        
+        .message.bot .message-content {
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            color: #ffffff;
+            border-bottom-left-radius: 5px;
+            margin-right: 20px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .typing-content {
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            padding: 16px 20px;
+            border-radius: 20px 20px 20px 5px;
+            margin-right: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .typing-dots div {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00d084;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dots div:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots div:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { 
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .option-btn {
+            background: linear-gradient(135deg, #00d084 0%, #00b16a 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 208, 132, 0.3);
+            transform: translateY(0);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-btn:hover {
+            background: linear-gradient(135deg, #00b16a 0%, #00a75f 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 208, 132, 0.4);
+        }
+        
+        .option-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Estilos específicos para balões de horários */
+        .horario-btn {
+            background: linear-gradient(135deg, #198754 0%, #157347 100%) !important;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            min-width: 280px;
+            padding: 15px 20px !important;
+            margin-bottom: 10px;
+        }
+        
+        .horario-btn:hover {
+            background: linear-gradient(135deg, #157347 0%, #146c43 100%) !important;
+            transform: translateY(-3px) scale(1.02);
+        }
+        
+        .horario-info {
+            width: 100%;
+        }
+        
+        .horario-data {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 6px;
+        }
+        
+        .horario-hora {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        
+        .horario-medico, .horario-especialidade, .horario-local, .horario-duracao {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        
+        .horario-medico {
+            font-weight: 600;
+        }
+        
+        .horario-especialidade {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .input-section {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .input-group {
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        #messageInput {
+            border: 2px solid rgba(0, 208, 132, 0.3);
+            padding: 15px 25px;
+            background: rgba(22, 27, 34, 0.8);
+            backdrop-filter: blur(5px);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            border-radius: 25px 0 0 25px;
+            font-size: 1rem;
+        }
+        
+        #messageInput:focus {
+            border-color: #00d084;
+            box-shadow: 0 0 20px rgba(0, 208, 132, 0.3);
+            background: rgba(22, 27, 34, 0.9);
+            outline: none;
+        }
+        
+        #messageInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        #sendButton {
+            border-radius: 0 25px 25px 0;
+            width: 60px;
+            height: 60px;
+            border: none;
+            background: linear-gradient(135deg, #00d084 0%, #00b16a 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 208, 132, 0.3);
+            border: 2px solid rgba(0, 208, 132, 0.3);
+        }
+        
+        #sendButton:hover {
+            background: linear-gradient(135deg, #00b16a 0%, #00a75f 100%);
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(0, 208, 132, 0.4);
+        }
+        
+        #sendButton:active {
+            transform: scale(0.98);
+        }
+        
+        .quick-actions {
+            margin-top: 15px;
+        }
+        
+        .quick-actions .btn {
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin: 0 5px 10px 0;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .quick-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            background: rgba(13, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px 20px 0 0 !important;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+            }
+        }
+        
+        #attachButton:hover {
+            background: linear-gradient(135deg, #ffed4a, #f6cc02) !important;
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5) !important;
+            border-color: #f6cc02 !important;
+        }
+        
+        #attachButton:active {
+            transform: scale(0.98);
+        }
+        
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 60vh;
+                padding: 15px;
+                border-radius: 15px;
+            }
+            
+            .message-content {
+                max-width: 85%;
+                padding: 12px 16px;
+            }
+            
+            .quick-actions .btn {
+                font-size: 0.85rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" >
+        <div class="container" >
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-robot me-2"></i>
+                <span class="status-indicator"></span>
+                {{ nome_assistente }}
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/admin">
+                    <i class="bi bi-gear me-1"></i>
+                    Admin
+                </a>
+                <a class="nav-link" href="/agendamentos">
+                    <i class="bi bi-calendar me-1"  ></i>
+                    Agendamentos
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4 class="mb-0">
+                            <i class="bi bi-chat-heart-fill me-2" style="color: #00d084;"></i>
+                            {{ nome_assistente }} - {{ nome_clinica }}
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="chatContainer" class="chat-container">
+                            <div class="welcome-message">
+                                <i class="bi bi-heart-pulse" style="color: #00d084;"></i>
+                                Bem-vindo à {{ nome_clinica }}! Estou aqui para ajudar com seus agendamentos médicos.
+                            </div>
+                        </div>
+                        
+                        <div class="typing-indicator" id="typingIndicator">
+                            <div class="typing-content">
+                                <div class="typing-dots">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-section mt-3">
+                    <div class="input-group">
+                        <button class="btn" type="button" id="attachButton" title="Anexar arquivo" 
+                                style="background: linear-gradient(135deg, #ffd700, #ffb347); border: 2px solid #ffd700; color: #333; border-radius: 25px 0 0 25px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);">
+                            <i class="bi bi-paperclip" style="font-size: 1.1rem; font-weight: bold;"></i>
+                        </button>
+                        <input type="text" 
+                               id="messageInput" 
+                               class="form-control" 
+                               placeholder="Digite sua mensagem..." 
+                               autocomplete="off">
+                        <button class="btn" type="button" id="sendButton">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                    <input type="file" 
+                           id="fileInput" 
+                           style="display: none" 
+                           accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                           title="Selecionar arquivo para anexar">
+                </div>
+                    
+                    <div class="quick-actions">
+                        <button type="button" class="btn btn-outline-info" onclick="enviarMensagem('Oi')">
+                            <i class="bi bi-calendar-plus me-1"></i>
+                            Agendar Consulta
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="enviarMensagem('Cancelar consulta')">
+                            <i class="bi bi-calendar-x me-1"></i>
+                            Cancelar Consulta
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="enviarMensagem('Consultar agendamentos')">
+                            <i class="bi bi-search me-1"></i>
+                            Consultar Agendamentos
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer com Créditos -->
+    <footer class="bg-dark text-center py-3 mt-4">
+        <div class="container">
+            <p class="text-muted mb-1">
+                <i class="bi bi-heart-fill" style="color: #00d084;"></i>
+                {{ nome_clinica }} - Sistema de Agendamento Médico por IA
+            </p>
+            <p class="text-secondary small mb-0">
+                Desenvolvido por <strong>João Layon</strong> - Desenvolvedor Full Stack Python | 
+                <span style="color: #00d084;">Contato (31)9 9528 1707</span>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/chat.js"></script>
+    <script>
+        // Função para enviar mensagem via botão
+        function enviarMensagem(texto) {
+            document.getElementById('messageInput').value = texto;
+            chat.enviarMensagem();
+        }
+
+        // Inicializar chat quando a página carregar
+        let chat;
+        document.addEventListener('DOMContentLoaded', function() {
+            chat = new ChatBot();
+            
+            // Auto-focus no input
+            document.getElementById('messageInput').focus();
+        });
+    </script>
+</body>
+</html>

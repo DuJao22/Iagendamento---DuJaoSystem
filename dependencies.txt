@@ -1,0 +1,66 @@
+# Sistema de Agendamento Médico - SQLite3 Puro
+# João Layon - 2025
+# Dependências necessárias para o funcionamento
+
+## Dependências Principais Instaladas
+
+### Framework Web
+- Flask (framework web principal)
+- Werkzeug (utilitários WSGI e proxy)
+- gunicorn (servidor web de produção)
+
+### IA e Processamento
+- google-generativeai (Google Gemini para chatbot)
+
+### Base de Dados
+- SQLite3 (incluído no Python - nativo)
+- Nenhuma dependência externa necessária
+
+### Utilitários
+- email-validator (validação de emails)
+- logging (logs do sistema - nativo do Python)
+
+## Comandos para Instalação Manual
+
+Se precisar instalar em outro ambiente:
+
+```bash
+pip install Flask==3.0.0
+pip install Werkzeug==3.0.1  
+pip install google-generativeai==0.8.3
+pip install gunicorn==21.2.0
+pip install email-validator==2.1.0.post1
+```
+
+## Para SQLite Cloud (migração futura)
+
+Quando migrar para SQLite Cloud, adicionar:
+
+```bash
+pip install libsql-client
+pip install turso
+```
+
+## Variáveis de Ambiente Necessárias
+
+```bash
+GEMINI_API_KEY=sua_chave_do_google_gemini
+SESSION_SECRET=chave_secreta_opcional
+```
+
+## Dependências do Sistema
+
+- Python 3.11+ (recomendado)
+- SQLite3 (incluído no Python)
+- Sistema operacional: Linux/Windows/MacOS
+
+## Verificar Instalação
+
+```python
+# Testar importações
+import sqlite3
+import flask
+import google.generativeai as genai
+
+print("Todas as dependências estão funcionando!")
+```

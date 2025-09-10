@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamentos - {{ nome_clinica }}</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1d29 0%, #2d3436 50%, #1a1d29 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: rgba(13, 17, 23, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        
+        .page-header {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .admin-notice {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 179, 0, 0.1) 100%);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .card {
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .card-header {
+            background: rgba(13, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px 20px 0 0 !important;
+            padding: 20px;
+        }
+        
+        .status-agendado {
+            border-left: 4px solid #00d084;
+            background: linear-gradient(135deg, rgba(0, 208, 132, 0.1) 0%, rgba(0, 177, 106, 0.1) 100%);
+        }
+        
+        .status-cancelado {
+            border-left: 4px solid #dc3545;
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(187, 45, 59, 0.1) 100%);
+        }
+        
+        .status-concluido {
+            border-left: 4px solid #198754;
+            background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(21, 115, 71, 0.1) 100%);
+        }
+        
+        .badge {
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #00d084 0%, #00b16a 100%);
+            border-color: rgba(0, 208, 132, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            border-color: rgba(255, 193, 7, 0.3);
+            color: #000;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+            border-color: rgba(220, 53, 69, 0.3);
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .appointment-time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00d084;
+        }
+        
+        .appointment-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00d084;
+        }
+        
+        .patient-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        
+        .doctor-info {
+            background: rgba(0, 208, 132, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .specialty-badge {
+            background: linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d084 0%, #00b16a 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 208, 132, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(0, 208, 132, 0.6);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+            }
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 20px;
+            }
+            
+            .floating-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-calendar-heart me-2"></i>
+                <span class="status-indicator"></span>
+                {{ nome_clinica }} - Agendamentos
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">
+                    <i class="bi bi-robot me-1"></i>
+                    Chatbot
+                </a>
+                <a class="nav-link" href="/admin">
+                    <i class="bi bi-gear me-1"></i>
+                    Admin
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="page-header fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">
+                        <i class="bi bi-shield-check me-2 text-warning"></i>
+                        Agendamentos - Área Administrativa
+                    </h2>
+                    <p class="text-muted mb-0">Visão completa de todos os agendamentos do sistema</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="/" class="btn btn-info">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Novo Agendamento
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="admin-notice fade-in">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-info-circle me-3 text-warning" style="font-size: 1.5rem;"></i>
+                <div>
+                    <h6 class="mb-1 text-warning">
+                        <strong>Acesso Administrativo</strong>
+                    </h6>
+                    <p class="mb-0 text-muted">
+                        Esta página é destinada apenas aos administradores da clínica. 
+                        Os pacientes podem consultar seus próprios agendamentos através do chatbot usando seu CPF.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros de Data -->
+        <div class="card mb-4 fade-in">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-funnel me-2" style="color: #00d084;"></i>
+                    Filtros
+                </h6>
+            </div>
+            <div class="card-body">
+                <form method="GET" class="row g-3 align-items-end">
+                    <div class="col-lg-2 col-md-3">
+                        <label for="data_inicio" class="form-label">Data Início</label>
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" 
+                               value="{{ request.args.get('data_inicio', '') }}">
+                    </div>
+                    <div class="col-lg-2 col-md-3">
+                        <label for="data_fim" class="form-label">Data Fim</label>
+                        <input type="date" class="form-control" id="data_fim" name="data_fim" 
+                               value="{{ request.args.get('data_fim', '') }}">
+                    </div>
+                    <div class="col-lg-2 col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Todos</option>
+                            <option value="agendado" {% if request.args.get('status') == 'agendado' %}selected{% endif %}>Agendado</option>
+                            <option value="concluido" {% if request.args.get('status') == 'concluido' %}selected{% endif %}>Concluído</option>
+                            <option value="cancelado" {% if request.args.get('status') == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-3">
+                        <label for="local" class="form-label">Local</label>
+                        <select class="form-select" id="local" name="local">
+                            <option value="">Todos</option>
+                            {% if locais %}
+                                {% for local in locais %}
+                                    <option value="{{ local.id }}" {% if request.args.get('local') == local.id|string %}selected{% endif %}>
+                                        {{ local.nome }}{% if local.cidade %} - {{ local.cidade }}{% endif %}
+                                    </option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-info">
+                                <i class="bi bi-search me-1"></i>
+                                Filtrar
+                            </button>
+                            <a href="{{ url_for('listar_agendamentos') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise me-1"></i>
+                                Limpar
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="fade-in">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show">
+                            <i class="bi bi-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if agendamentos %}
+            <div class="row fade-in">
+                {% for agendamento in agendamentos %}
+                    <div class="col-lg-6 col-xl-4 mb-4">
+                        <div class="card h-100 status-{{ agendamento.status }}">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="patient-name mb-1">
+                                        <i class="bi bi-person-circle me-2"></i>
+                                        {{ agendamento.paciente_rel.nome if agendamento.paciente_rel else agendamento.paciente }}
+                                    </h6>
+                                    {% if agendamento.paciente_rel and agendamento.paciente_rel.cpf %}
+                                        <small class="text-muted">CPF: {{ agendamento.paciente_rel.cpf[:3] }}.***.***-{{ agendamento.paciente_rel.cpf[-2:] }}</small>
+                                    {% endif %}
+                                </div>
+                                <span class="badge {% if agendamento.status == 'agendado' %}bg-info{% elif agendamento.status == 'cancelado' %}bg-danger{% else %}bg-success{% endif %}">
+                                    {% if agendamento.status == 'agendado' %}
+                                        <i class="bi bi-calendar-check me-1"></i>Agendado
+                                    {% elif agendamento.status == 'cancelado' %}
+                                        <i class="bi bi-x-circle me-1"></i>Cancelado
+                                    {% else %}
+                                        <i class="bi bi-check-circle me-1"></i>Concluído
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-calendar3 me-2" style="color: #00d084;"></i>
+                                        {% if agendamento.data is string %}
+                                            <span class="appointment-date">{{ agendamento.data }}</span>
+                                        {% else %}
+                                            <span class="appointment-date">{{ agendamento.data.strftime('%d/%m/%Y') }}</span>
+                                            <span class="text-muted ms-2">({{ agendamento.data.strftime('%A').title() }})</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="bi bi-clock me-2" style="color: #00d084;"></i>
+                                        {% if agendamento.hora is string %}
+                                            <span class="appointment-time">{{ agendamento.hora }}</span>
+                                        {% else %}
+                                            <span class="appointment-time">{{ agendamento.hora.strftime('%H:%M') }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if agendamento.medico_rel or agendamento.especialidade_rel %}
+                                <div class="doctor-info">
+                                    {% if agendamento.medico_rel %}
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="bi bi-person-badge me-2" style="color: #00d084;"></i>
+                                        <strong>Dr(a). {{ agendamento.medico_rel.nome }}</strong>
+                                    </div>
+                                    {% endif %}
+                                    {% if agendamento.especialidade_rel %}
+                                    <div class="specialty-badge">
+                                        <i class="bi bi-heart-pulse me-1"></i>
+                                        {{ agendamento.especialidade_rel.nome }}
+                                    </div>
+                                    {% endif %}
+                                    {% if agendamento.local_rel %}
+                                    <div class="d-flex align-items-center mt-2">
+                                        <i class="bi bi-geo-alt-fill me-2" style="color: #00d084;"></i>
+                                        <span class="text-white-50"><strong>{{ agendamento.local_rel.nome }}</strong></span>
+                                        {% if agendamento.local_rel.cidade %}
+                                            <span class="text-muted ms-1">- {{ agendamento.local_rel.cidade }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if agendamento.local_rel.endereco %}
+                                    <div class="d-flex align-items-center mt-1">
+                                        <i class="bi bi-map me-2" style="color: #6c757d;"></i>
+                                        <small class="text-muted">{{ agendamento.local_rel.endereco }}</small>
+                                    </div>
+                                    {% endif %}
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                {% if agendamento.observacoes %}
+                                    <div class="mt-3">
+                                        <small class="text-muted d-block mb-1">
+                                            <i class="bi bi-chat-text me-1"></i>Observações:
+                                        </small>
+                                        <p class="small mb-0 text-muted">{{ agendamento.observacoes }}</p>
+                                    </div>
+                                {% endif %}
+
+                                <!-- Seção de Anexos -->
+                                <div class="mt-3">
+                                    {% if agendamento.anexo_nome and agendamento.anexo_path %}
+                                        <div class="attachment-section">
+                                            <div class="d-flex align-items-center justify-content-between bg-dark bg-opacity-25 rounded p-2">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi {{ get_file_icon_template(agendamento.anexo_nome) }} me-2 text-success"></i>
+                                                    <div>
+                                                        <small class="text-success fw-semibold d-block">Anexo disponível</small>
+                                                        <small class="text-muted">{{ agendamento.anexo_nome }}</small>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <a href="{{ url_for('download_anexo', agendamento_id=agendamento.id) }}" 
+                                                       class="btn btn-outline-success btn-sm" title="Baixar anexo">
+                                                        <i class="bi bi-download me-1"></i>
+                                                        Baixar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="no-attachment">
+                                            <div class="d-flex align-items-center bg-secondary bg-opacity-25 rounded p-2">
+                                                <i class="bi bi-file-earmark-x me-2 text-muted"></i>
+                                                <small class="text-muted">Nenhum anexo enviado pelo paciente</small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mt-3 pt-2 border-top border-secondary">
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock-history me-1"></i>
+                                        {% if agendamento.criado_em is string %}
+                                Criado em {{ agendamento.criado_em }}
+                            {% else %}
+                                Criado em {{ agendamento.criado_em.strftime('%d/%m/%Y às %H:%M') }}
+                            {% endif %}
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            {% if agendamento.status == 'agendado' %}
+                            <div class="card-footer bg-transparent border-top border-secondary">
+                                <div class="d-flex gap-2">
+                                    <form method="POST" action="/admin/agendamento/{{ agendamento.id }}/concluir" style="flex: 1;">
+                                        <button type="submit" class="btn btn-success btn-sm w-100" 
+                                                onclick="return confirm('Marcar como concluído?')">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            Concluir
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="/admin/agendamento/{{ agendamento.id }}/cancelar" style="flex: 1;">
+                                        <button type="submit" class="btn btn-danger btn-sm w-100" 
+                                                onclick="return confirm('Tem certeza que deseja cancelar?')">
+                                            <i class="bi bi-x-circle me-1"></i>
+                                            Cancelar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state fade-in">
+                <i class="bi bi-calendar-x"></i>
+                <h4 class="text-muted">Nenhum agendamento encontrado</h4>
+                <p class="text-muted mb-4">
+                    Quando os pacientes agendarem consultas através do chatbot, elas aparecerão aqui.
+                </p>
+                <a href="/" class="btn btn-info btn-lg">
+                    <i class="bi bi-robot me-2"></i>
+                    Ir para o Chatbot
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Botão flutuante para voltar ao topo -->
+    <button class="floating-btn" onclick="scrollToTop()" title="Voltar ao topo">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Adicionar animação fade-in ao carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+        
+        // Atualizar página a cada 30 segundos para mostrar novos agendamentos
+        setInterval(function() {
+            location.reload();
+        }, 30000);
+    </script>
+
+    <!-- Footer com Créditos -->
+    <footer class="bg-dark text-center py-3 mt-4">
+        <div class="container">
+            <p class="text-muted mb-1">
+                <i class="bi bi-calendar-heart" style="color: #00d084;"></i>
+                {{ nome_clinica }} - Sistema de Agendamentos
+            </p>
+            <p class="text-secondary small mb-0">
+                Desenvolvido por <strong>João Layon</strong> - Desenvolvedor Full Stack Python | 
+                <span style="color: #00d084;">Contato (31)9 9528 1707</span>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - {{ nome_clinica }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        .form-control, .form-select {
+            background-color: #ffffff;
+            border: 2px solid #e9ecef;
+            color: #333;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: #ffffff;
+            border-color: #667eea;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        }
+        
+        .form-control::placeholder {
+            color: #6c757d;
+            opacity: 0.7;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .btn-outline-primary:hover {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: none;
+        }
+        
+        .info-card h4 {
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        
+        .info-card small {
+            opacity: 0.9;
+        }
+        
+        .local-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .local-item:hover {
+            border-color: #667eea;
+            background: #f1f3ff;
+        }
+        
+        .local-item h6 {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .container {
+            max-width: 1200px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-gear-fill me-2"></i>
+                Configurações do Sistema
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{{ url_for('admin') }}">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Voltar ao Painel
+                </a>
+                <a class="nav-link" href="{{ url_for('admin_logout') }}">
+                    <i class="bi bi-box-arrow-right me-1"></i>
+                    Sair
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <!-- Configurações Gerais -->
+            <div class="col-md-8 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-sliders me-2"></i>
+                            Configurações Gerais
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome_clinica" class="form-label">Nome da Clínica</label>
+                                    <input type="text" class="form-control" id="nome_clinica" name="nome_clinica" 
+                                           value="{{ configuracoes.nome_clinica }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="nome_assistente" class="form-label">Nome do Assistente</label>
+                                    <input type="text" class="form-control" id="nome_assistente" name="nome_assistente" 
+                                           value="{{ configuracoes.nome_assistente }}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefone_clinica" class="form-label">Telefone da Clínica</label>
+                                    <input type="text" class="form-control" id="telefone_clinica" name="telefone_clinica" 
+                                           value="{{ configuracoes.telefone_clinica }}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email_admin" class="form-label">Email do Administrador</label>
+                                    <input type="email" class="form-control" id="email_admin" name="email_admin" 
+                                           value="{{ configuracoes.email_admin }}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="senha_admin" class="form-label">Nova Senha Admin (opcional)</label>
+                                    <input type="password" class="form-control" id="senha_admin" name="senha_admin" 
+                                           placeholder="Deixe em branco para manter a atual">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="horario_funcionamento" class="form-label">Horário de Funcionamento</label>
+                                    <input type="text" class="form-control" id="horario_funcionamento" name="horario_funcionamento" 
+                                           value="{{ configuracoes.horario_funcionamento }}" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Configurações Avançadas -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="duracao_agendamento_recorrente" class="form-label">Duração Agenda Recorrente (semanas)</label>
+                                    <input type="number" class="form-control" id="duracao_agendamento_recorrente" name="duracao_agendamento_recorrente" 
+                                           value="{{ configuracoes.duracao_agendamento_recorrente or '4' }}" min="1" max="12" required>
+                                    <small class="form-text text-muted">Por quanto tempo os pacientes ficam fixos no mesmo horário</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" id="bloquear_especialidades_duplicadas" 
+                                               name="bloquear_especialidades_duplicadas" 
+                                               {% if configuracoes.bloquear_especialidades_duplicadas == 'true' %}checked{% endif %}>
+                                        <label class="form-check-label" for="bloquear_especialidades_duplicadas">
+                                            <strong>Bloquear Especialidades Duplicadas</strong>
+                                            <br><small class="text-muted">
+                                                Impedir que um paciente tenha agendamentos em especialidades iguais com médicos diferentes
+                                            </small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Configurações Avançadas:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li><strong>Agenda Recorrente:</strong> Define por quantas semanas os pacientes ficam fixos no mesmo horário</li>
+                                    <li><strong>Especialidades Duplicadas:</strong> Impede que um paciente tenha consultas com médicos diferentes da mesma especialidade</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Salvar Configurações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Locais de Atendimento -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-geo-alt me-2"></i>
+                            Locais de Atendimento
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if locais %}
+                            {% for local in locais %}
+                                <div class="local-item">
+                                    <h6>{{ local.nome }}</h6>
+                                    <p class="mb-1 small text-muted">{{ local.endereco or 'Endereço não informado' }}</p>
+                                    <p class="mb-1 small text-muted">{{ local.cidade }}</p>
+                                    <p class="mb-0 small text-muted">{{ local.telefone or 'Telefone não informado' }}</p>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center">Nenhum local cadastrado</p>
+                        {% endif %}
+                        
+                        <div class="text-center">
+                            <a href="{{ url_for('admin') }}#locais" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                Gerenciar Locais
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ações Perigosas -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Ações Perigosas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-danger">
+                                    <i class="bi bi-database-x me-2"></i>
+                                    Zerar Banco de Dados
+                                </h6>
+                                <p class="text-muted small mb-3">
+                                    Remove TODOS os dados: agendamentos, pacientes, médicos, horários.
+                                    <strong>Esta ação é IRREVERSÍVEL!</strong>
+                                </p>
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                        onclick="confirmarZerarBanco()">
+                                    <i class="bi bi-trash3 me-1"></i>
+                                    Zerar Banco Completo
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-warning mb-0">
+                                    <h6 class="alert-heading">
+                                        <i class="bi bi-shield-exclamation me-1"></i>
+                                        Cuidado!
+                                    </h6>
+                                    <p class="mb-0 small">
+                                        Use apenas para limpar dados de teste ou começar do zero.
+                                        Mantenha sempre backup dos dados importantes.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações do Sistema -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Informações do Sistema
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="info-card">
+                                    <h4>{{ configuracoes.nome_clinica or 'N/A' }}</h4>
+                                    <small>Nome da Clínica</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="info-card">
+                                    <h4>{{ configuracoes.nome_assistente or 'N/A' }}</h4>
+                                    <small>Assistente Virtual</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="info-card">
+                                    <h4>{{ configuracoes.telefone_clinica or 'N/A' }}</h4>
+                                    <small>Telefone</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="info-card">
+                                    <h4>v2.0.0</h4>
+                                    <small>Versão do Sistema</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    function confirmarZerarBanco() {
+        // Primeira confirmação
+        if (!confirm('⚠️ ATENÇÃO: Você está prestes a APAGAR TODOS OS DADOS do sistema!\n\nIsso inclui:\n- Todos os agendamentos\n- Todos os pacientes\n- Todos os médicos\n- Todos os horários\n- Todas as configurações\n\nEsta ação é IRREVERSÍVEL!\n\nTem certeza que deseja continuar?')) {
+            return;
+        }
+        
+        // Segunda confirmação mais rigorosa
+        const confirmacao = prompt('Para confirmar, digite EXATAMENTE a palavra: APAGAR');
+        if (confirmacao !== 'APAGAR') {
+            alert('Operação cancelada. A palavra não foi digitada corretamente.');
+            return;
+        }
+        
+        // Terceira confirmação final
+        if (!confirm('ÚLTIMA CONFIRMAÇÃO:\n\nVocê digitou a palavra correta.\nTodos os dados serão PERMANENTEMENTE PERDIDOS.\n\nExecutar limpeza completa do banco de dados?')) {
+            return;
+        }
+        
+        // Criar formulário para enviar requisição
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("zerar_banco_dados") }}';
+        
+        // Adicionar token CSRF se necessário
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'confirmacao';
+        csrfToken.value = 'APAGAR';
+        form.appendChild(csrfToken);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+    </script>
+</body>
+</html>
